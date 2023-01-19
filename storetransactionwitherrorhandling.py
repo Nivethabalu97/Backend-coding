@@ -72,7 +72,7 @@ def get_post_Request1():
     g = check1(getData)
     id = generateid(getData)
     getData["id"] = id
-    if d and e and f and g == True:
+    if d["status"] and e["status"] and f["status"] and g["status"] == True:
         try:
             signuptime = datetime.datetime.now()
             getData["signuptime"] = signuptime
@@ -80,11 +80,11 @@ def get_post_Request1():
             val = (getData["firstname"], getData["lastname"], getData["emailid"], getData["mobilenumber"],
                    getData["password"], getData["dob"], getData["signuptime"], getData["id"])
             mycursor.execute(sql, val)
-            # mydb.commit()
+            mydb.commit()
             print("hai")
             filter = getData["id"]
             print("hello")
-            sql1 = "SELECT * FROM transactions WHERE id="+filter
+            sql1 = "SELECT * FROM signup WHERE id='"+filter+"'"
             print(sql1)
             mycursor.execute(sql1)
             myresult = mycursor.fetchall()
@@ -102,22 +102,26 @@ def get_post_Request1():
             message1 = "Sorry, your data cannot be stored in database" + \
                 str(error)
             return message1
-    else:
-        note = "sorry try again"
-        return note, "422"
-
+    elif d["status"]==False:
+        return d,422
+    elif e["status"]==False:
+        return e,422
+    elif f["status"]==False:
+        return f,422
+    elif g["status"]==False:
+        return g,422
 
 def check(a):
     for i, j in a.items():
         if type(j) != str:
             print("please enter valid data")
-            print("datatype of " + str(i)+"is invalid")
+            m1="datatype of" + str(i)+ "is invalid"
             b = False
-            return b
+            return {"status":False,"message":m1}
         else:
-            print("all the data are valid type")
+            m1="all the data are valid type"
             c = True
-            return c
+    return {"status":True,"message":m1}
 
 
 def generateid(getData):
@@ -137,33 +141,57 @@ def alpha(getData):
     y = lname.isalpha()
     if x and y == True:
         z = True
-        return z
+        return {"status":True}
     else:
+        m1="firstname and lastname should not contain any numbers"
         z = False
-        return z
+        return {"status":False,"message":m1}
 
 
 def num(getData):
-    x = str(getData["mobilenumber"])
-    y = (x.isdigit())
+    x = getData["mobilenumber"]
+    y = (getData["mobilenumber"].isdigit())
+   
     if len(x) == 10 and y == True:
         z = True
-        return z
+        return {"status":True}
     else:
-        z = "mob number should be of strictly 10 digits and should not contain any alphabets"
-        return z
+        m1 = "mob number should be of strictly 10 digits and should not contain any alphabets"
+        return {"status":False,"message":m1}
 
 
 def check1(getData):
     email = getData["emailid"]
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
     if (re.fullmatch(regex, email)):
-        z = True
-        return z
+        return{"status":True}
     else:
-        z = "Invalid Email"
-        return z
+        m1="email id should be of correct format"
+        return{"status":False,"message":m1}
 
+# def check_fields(listOfFields, _dictionary):
+#     """
+#     This method should check if the give fields are
+#     available in the dictionary or not
+#     Eg - ["fname", "lname", "dob"]
+#     Check if these keys are present in the _dictionary
+#     """
 
+# def check_password(password):
+#     """
+#     This method will do the following checks
+#     - If the password is in the range of length 8-15
+#     - If the passsword has atleast one number
+#     - If the password has atleast one Capital letter
+#     - If the password has atleast one small letter
+#     - If the password has atleast one special character from /?*&!
+#     """
+
+# Commit history order
+# - Write the password method - Not tested
+# - Tested code
+# - write check fields - Not tested
+# - Tested code
+# - For each foramtted and documented function, a commit should be done
 if __name__ == '__main__':
     app.run()
