@@ -233,7 +233,7 @@ def check_fields(fields,getData):
         response={"status":True,"message":"success"}
         return response
     else:
-        response={"status":False}
+        response={"status":False,"message":"Please enter all required fields"}
         return response
 
 
