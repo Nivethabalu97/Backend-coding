@@ -71,9 +71,11 @@ def get_post_Request1():
     f = num(getData)
     g = check1(getData)
     h=password_check(getData)
+    fields=["firstname","lastname","emailid","mobilenumber","password","dob"]
+    i=check_fields(fields,getData)
     id = generateid(getData)
     getData["id"] = id
-    if d["status"] and e["status"] and f["status"] and g["status"] and h["status"]== True:
+    if d["status"] and e["status"] and f["status"] and g["status"] and h["status"] and i["status"]== True:
         try:
             signuptime = datetime.datetime.now()
             getData["signuptime"] = signuptime
@@ -113,6 +115,8 @@ def get_post_Request1():
         return g,422
     elif h["status"]==False:
         return h,422
+    elif i["status"]==False:
+        return i,422
 
 def check(a):
     for i, j in a.items():
@@ -215,6 +219,21 @@ def password_check(getData):
         
     else:
         response={"status":False,"message":"Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"} 
+        return response
+
+def check_fields(fields,getData):
+    for i in fields:
+        for j in getData.keys():
+            if i ==j :
+                a=True
+            else:
+                a=False
+    
+    if a==True:
+        response={"status":True,"message":"success"}
+        return response
+    else:
+        response={"status":False}
         return response
 
 
