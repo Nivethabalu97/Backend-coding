@@ -70,9 +70,10 @@ def get_post_Request1():
     e = alpha(getData)
     f = num(getData)
     g = check1(getData)
+    h=password_check(getData)
     id = generateid(getData)
     getData["id"] = id
-    if d["status"] and e["status"] and f["status"] and g["status"] == True:
+    if d["status"] and e["status"] and f["status"] and g["status"] and h["status"]== True:
         try:
             signuptime = datetime.datetime.now()
             getData["signuptime"] = signuptime
@@ -110,6 +111,8 @@ def get_post_Request1():
         return f,422
     elif g["status"]==False:
         return g,422
+    elif h["status"]==False:
+        return h,422
 
 def check(a):
     for i, j in a.items():
@@ -193,5 +196,27 @@ def check1(getData):
 # - write check fields - Not tested
 # - Tested code
 # - For each foramtted and documented function, a commit should be done
+
+def password_check(getData):
+    x=getData["password"]
+    #number check
+    y=bool(re.match('^(?=.*[0-9]$)(?=.*[a-zA-Z])', x))
+    #uppercase check
+    z= bool(re.match(r'\w*[A-Z]\w*', x))
+    #lowercase check
+    z1=bool(re.match(r'\w*[a-z]\w*', x))
+    #special character check
+    regex = re.compile('[/?*&!@]')
+    z2=getData["password"]
+    
+    if len(x) >=8 and len(x)<=15 and y==True and z==True and z1==True and regex.search(z2) != None:
+        response={"status":True}
+        return response
+        
+    else:
+        response={"status":False,"message":"Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"} 
+        return response
+
+
 if __name__ == '__main__':
     app.run()
