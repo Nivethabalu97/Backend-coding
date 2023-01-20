@@ -91,7 +91,7 @@ def get_post_Request1():
             myresult = mycursor.fetchall()
             print(myresult)
             if (len(myresult)) != 0:
-                message = "Successfully stored and status code: 201 "
+                message = "Successfully stored and status code: 200 "
                 return message
             else:
                 message = "Not Stored"
