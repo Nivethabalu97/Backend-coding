@@ -68,14 +68,14 @@ def get_post_Request1():
     getData = request.json
     result_datatype = check_data_type(getData)
     result_alphabets = check_alphabets(getData)
-    f = num(getData)
+    result_mobilenumber = check_mob_num(getData)
     g = check1(getData)
     h=password_check(getData)
     fields=["firstname","lastname","emailid","mobilenumber","password","dob"]
     i=check_fields(fields,getData)
     id = generate_id(getData)
     getData["id"] = id
-    if result_datatype["status"] and result_alphabets["status"] and f["status"] and g["status"] and h["status"] and i["status"]== True:
+    if result_datatype["status"] and result_alphabets["status"] and result_mobilenumber["status"] and g["status"] and h["status"] and i["status"]== True:
         try:
             signuptime = datetime.datetime.now()
             getData["signuptime"] = signuptime
@@ -109,8 +109,8 @@ def get_post_Request1():
         return result_datatype,422
     elif result_alphabets["status"]==False:
         return result_alphabets,422
-    elif f["status"]==False:
-        return f,422
+    elif result_mobilenumber["status"]==False:
+        return result_mobilenumber,422
     elif g["status"]==False:
         return g,422
     elif h["status"]==False:
@@ -176,16 +176,25 @@ def check_alphabets(getData):
         return response
 
 
-def num(getData):
-    x = getData["mobilenumber"]
-    y = (getData["mobilenumber"].isdigit())
+def check_mob_num(getData):
+    """
+    This method will check if the given mobilenumber
+    of the user contains only digits
+    
+    parameter: payload::<dict>
+    return: response:: <dict>
+    """
+    mob_number = getData["mobilenumber"]
+    result_mobnumber= (getData["mobilenumber"].isdigit())
    
-    if len(x) == 10 and y == True:
-        z = True
-        return {"status":True}
+    if len(mob_number) == 10 and result_mobnumber== True:
+        message="valid mobile number"
+        response={"status":True,"message":message}
+        return response
     else:
-        m1 = "mob number should be of strictly 10 digits and should not contain any alphabets"
-        return {"status":False,"message":m1}
+        message= "mob number should be of strictly 10 digits and should not contain any alphabets"
+        response= {"status":False,"message":message}
+        return response
 
 
 def check1(getData):
