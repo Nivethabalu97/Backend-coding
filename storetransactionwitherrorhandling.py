@@ -10,7 +10,7 @@ mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     password="Nivetha@123",
-    database="sampledatabase" 
+    database="sampledatabase"
 )
 
 mycursor = mydb.cursor()
@@ -69,13 +69,14 @@ def get_post_Request1():
     result_datatype = check_data_type(getData)
     result_alphabets = check_alphabets(getData)
     result_mobilenumber = check_mob_num(getData)
-    g = check1(getData)
-    h=password_check(getData)
-    fields=["firstname","lastname","emailid","mobilenumber","password","dob"]
-    i=check_fields(fields,getData)
+    result_email = check_email(getData)
+    h = password_check(getData)
+    fields = ["firstname", "lastname", "emailid",
+              "mobilenumber", "password", "dob"]
+    i = check_fields(fields, getData)
     id = generate_id(getData)
     getData["id"] = id
-    if result_datatype["status"] and result_alphabets["status"] and result_mobilenumber["status"] and g["status"] and h["status"] and i["status"]== True:
+    if result_datatype["status"] and result_alphabets["status"] and result_mobilenumber["status"] and result_email["status"] and h["status"] and i["status"] == True:
         try:
             signuptime = datetime.datetime.now()
             getData["signuptime"] = signuptime
@@ -105,18 +106,19 @@ def get_post_Request1():
             message1 = "Sorry, your data cannot be stored in database" + \
                 str(error)
             return message1
-    elif result_datatype["status"]==False:
-        return result_datatype,422
-    elif result_alphabets["status"]==False:
-        return result_alphabets,422
-    elif result_mobilenumber["status"]==False:
-        return result_mobilenumber,422
-    elif g["status"]==False:
-        return g,422
-    elif h["status"]==False:
-        return h,422
-    elif i["status"]==False:
-        return i,422
+    elif result_datatype["status"] == False:
+        return result_datatype, 422
+    elif result_alphabets["status"] == False:
+        return result_alphabets, 422
+    elif result_mobilenumber["status"] == False:
+        return result_mobilenumber, 422
+    elif result_email["status"] == False:
+        return result_email, 422
+    elif h["status"] == False:
+        return h, 422
+    elif i["status"] == False:
+        return i, 422
+
 
 def check_data_type(getData: dict):
     """
@@ -128,20 +130,20 @@ def check_data_type(getData: dict):
     """
     for keys, values in getData.items():
         if type(values) != str:
-            message=f"Datatype of {keys} is invalid"
-            response= {"status":False,"message":message}
+            message = f"Datatype of {keys} is invalid"
+            response = {"status": False, "message": message}
             return response
         else:
             message = "All the data are valid type"
-            response={"status":True,"message":message}
+            response = {"status": True, "message": message}
     return response
 
 
-def generate_id(getData:dict):
+def generate_id(getData: dict):
     """
     This method will generate unique id for every user 
     based on the firstname of the user 
-    
+
     parameter: payload::<dict>
     return: new_id:: <string>
     """
@@ -158,21 +160,21 @@ def check_alphabets(getData):
     """
     This method will check if the firstname and lastname
     of the user contains only alphabets
-    
+
     parameter: payload::<dict>
     return: response:: <dict>
     """
     first_name = (getData["firstname"])
     last_name = (getData["lastname"])
-    result_firstname= first_name.isalpha()
-    result_lastname= last_name.isalpha()
+    result_firstname = first_name.isalpha()
+    result_lastname = last_name.isalpha()
     if result_firstname and result_lastname == True:
-        message="Valid firstname and lastname"
-        response= {"status":True,"message":message}
+        message = "Valid firstname and lastname"
+        response = {"status": True, "message": message}
         return response
     else:
-        message="firstname and lastname should not contain any numbers"
-        response= {"status":False,"message":message}
+        message = "firstname and lastname should not contain any numbers"
+        response = {"status": False, "message": message}
         return response
 
 
@@ -180,31 +182,41 @@ def check_mob_num(getData):
     """
     This method will check if the given mobilenumber
     of the user contains only digits
-    
+
     parameter: payload::<dict>
     return: response:: <dict>
     """
     mob_number = getData["mobilenumber"]
-    result_mobnumber= (getData["mobilenumber"].isdigit())
-   
-    if len(mob_number) == 10 and result_mobnumber== True:
-        message="valid mobile number"
-        response={"status":True,"message":message}
+    result_mobnumber = (getData["mobilenumber"].isdigit())
+
+    if len(mob_number) == 10 and result_mobnumber == True:
+        message = "valid mobile number"
+        response = {"status": True, "message": message}
         return response
     else:
-        message= "mob number should be of strictly 10 digits and should not contain any alphabets"
-        response= {"status":False,"message":message}
+        message = "mob number should be of strictly 10 digits and should not contain any alphabets"
+        response = {"status": False, "message": message}
         return response
 
 
-def check1(getData):
+def check_email(getData):
+    """
+    This method will check if the given emailid
+    is in correct format
+
+    parameter: payload::<dict>
+    return: response:: <dict>
+    """
     email = getData["emailid"]
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
     if (re.fullmatch(regex, email)):
-        return{"status":True}
+        message = "valid emailid"
+        response = {"status": True, "message": message}
+        return response
     else:
-        m1="email id should be of correct format"
-        return{"status":False,"message":m1}
+        message = "email id should be of correct format"
+        response = {"status": False, "message": message}
+        return response
 
 # def check_fields(listOfFields, _dictionary):
 #     """
@@ -231,39 +243,43 @@ def check1(getData):
 # - Tested code
 # - For each foramtted and documented function, a commit should be done
 
+
 def password_check(getData):
-    x=getData["password"]
-    #number check
-    y=bool(re.match('^(?=.*[0-9]$)(?=.*[a-zA-Z])', x))
-    #uppercase check
-    z= bool(re.match(r'\w*[A-Z]\w*', x))
-    #lowercase check
-    z1=bool(re.match(r'\w*[a-z]\w*', x))
-    #special character check
+    x = getData["password"]
+    # number check
+    y = bool(re.match('^(?=.*[0-9]$)(?=.*[a-zA-Z])', x))
+    # uppercase check
+    z = bool(re.match(r'\w*[A-Z]\w*', x))
+    # lowercase check
+    z1 = bool(re.match(r'\w*[a-z]\w*', x))
+    # special character check
     regex = re.compile('[/?*&!@]')
-    z2=getData["password"]
-    
-    if len(x) >=8 and len(x)<=15 and y==True and z==True and z1==True and regex.search(z2) != None:
-        response={"status":True}
-        return response
-        
-    else:
-        response={"status":False,"message":"Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"} 
+    z2 = getData["password"]
+
+    if len(x) >= 8 and len(x) <= 15 and y == True and z == True and z1 == True and regex.search(z2) != None:
+        response = {"status": True}
         return response
 
-def check_fields(fields,getData):
+    else:
+        response = {"status": False,
+                    "message": "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"}
+        return response
+
+
+def check_fields(fields, getData):
     for i in fields:
         for j in getData.keys():
-            if i ==j :
-                a=True
+            if i == j:
+                a = True
             else:
-                a=False
-    
-    if a==True:
-        response={"status":True,"message":"success"}
+                a = False
+
+    if a == True:
+        response = {"status": True, "message": "success"}
         return response
     else:
-        response={"status":False,"message":"Please enter all required fields"}
+        response = {"status": False,
+                    "message": "Please enter all required fields"}
         return response
 
 
