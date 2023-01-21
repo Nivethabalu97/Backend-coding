@@ -67,7 +67,7 @@ def check(a):
 def get_post_Request1():
     getData = request.json
     result_datatype = check_data_type(getData)
-    e = alpha(getData)
+    result_alphabets = check_alphabets(getData)
     f = num(getData)
     g = check1(getData)
     h=password_check(getData)
@@ -75,7 +75,7 @@ def get_post_Request1():
     i=check_fields(fields,getData)
     id = generate_id(getData)
     getData["id"] = id
-    if result_datatype["status"] and e["status"] and f["status"] and g["status"] and h["status"] and i["status"]== True:
+    if result_datatype["status"] and result_alphabets["status"] and f["status"] and g["status"] and h["status"] and i["status"]== True:
         try:
             signuptime = datetime.datetime.now()
             getData["signuptime"] = signuptime
@@ -107,8 +107,8 @@ def get_post_Request1():
             return message1
     elif result_datatype["status"]==False:
         return result_datatype,422
-    elif e["status"]==False:
-        return e,422
+    elif result_alphabets["status"]==False:
+        return result_alphabets,422
     elif f["status"]==False:
         return f,422
     elif g["status"]==False:
@@ -154,18 +154,26 @@ def generate_id(getData:dict):
     return new_id
 
 
-def alpha(getData):
-    fname = (getData["firstname"])
-    lname = (getData["lastname"])
-    x = fname.isalpha()
-    y = lname.isalpha()
-    if x and y == True:
-        z = True
-        return {"status":True}
+def check_alphabets(getData):
+    """
+    This method will check if the firstname and lastname
+    of the user contains only alphabets
+    
+    parameter: payload::<dict>
+    return: response:: <dict>
+    """
+    first_name = (getData["firstname"])
+    last_name = (getData["lastname"])
+    result_firstname= first_name.isalpha()
+    result_lastname= last_name.isalpha()
+    if result_firstname and result_lastname == True:
+        message="Valid firstname and lastname"
+        response= {"status":True,"message":message}
+        return response
     else:
-        m1="firstname and lastname should not contain any numbers"
-        z = False
-        return {"status":False,"message":m1}
+        message="firstname and lastname should not contain any numbers"
+        response= {"status":False,"message":message}
+        return response
 
 
 def num(getData):
