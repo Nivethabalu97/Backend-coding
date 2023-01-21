@@ -66,16 +66,16 @@ def check(a):
 @app.route("/postUsers2", methods=["POST"])
 def get_post_Request1():
     getData = request.json
-    d = check(getData)
+    result_datatype = check_data_type(getData)
     e = alpha(getData)
     f = num(getData)
     g = check1(getData)
     h=password_check(getData)
     fields=["firstname","lastname","emailid","mobilenumber","password","dob"]
     i=check_fields(fields,getData)
-    id = generateid(getData)
+    id = generate_id(getData)
     getData["id"] = id
-    if d["status"] and e["status"] and f["status"] and g["status"] and h["status"] and i["status"]== True:
+    if result_datatype["status"] and e["status"] and f["status"] and g["status"] and h["status"] and i["status"]== True:
         try:
             signuptime = datetime.datetime.now()
             getData["signuptime"] = signuptime
@@ -105,8 +105,8 @@ def get_post_Request1():
             message1 = "Sorry, your data cannot be stored in database" + \
                 str(error)
             return message1
-    elif d["status"]==False:
-        return d,422
+    elif result_datatype["status"]==False:
+        return result_datatype,422
     elif e["status"]==False:
         return e,422
     elif f["status"]==False:
@@ -118,27 +118,40 @@ def get_post_Request1():
     elif i["status"]==False:
         return i,422
 
-def check(a):
-    for i, j in a.items():
-        if type(j) != str:
-            print("please enter valid data")
-            m1="datatype of" + str(i)+ "is invalid"
-            b = False
-            return {"status":False,"message":m1}
+def check_data_type(getData: dict):
+    """
+    This method will check if the given values
+    in the dictionary is string or not
+
+    parameter: payload::<dict>
+    return: response:: <dict>
+    """
+    for keys, values in getData.items():
+        if type(values) != str:
+            message=f"Datatype of {keys} is invalid"
+            response= {"status":False,"message":message}
+            return response
         else:
-            m1="all the data are valid type"
-            c = True
-    return {"status":True,"message":m1}
+            message = "All the data are valid type"
+            response={"status":True,"message":message}
+    return response
 
 
-def generateid(getData):
-    fname = (getData["firstname"])
-    name = ""
-    for i in range(0, 4):
-        name = name+fname[i]
+def generate_id(getData:dict):
+    """
+    This method will generate unique id for every user 
+    based on the firstname of the user 
+    
+    parameter: payload::<dict>
+    return: new_id:: <string>
+    """
+    first_name = (getData["firstname"])
+    new_id = ""
+    for alphabet in range(0, 4):
+        new_id = new_id+first_name[alphabet]
     count = "000"
-    name = name+"_"+count
-    return name
+    new_id = new_id+"_"+count
+    return new_id
 
 
 def alpha(getData):
