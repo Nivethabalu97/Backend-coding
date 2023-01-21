@@ -73,11 +73,11 @@ def get_post_Request1():
     result_password = check_password(getData)
     fields = ["firstname", "lastname", "emailid",
               "mobilenumber", "password", "dob"]
-    i = check_fields(fields, getData)
+    result_checkfields = check_fields(fields, getData)
     id = generate_id(getData)
     getData["id"] = id
     result_password = check_password(getData)
-    if result_datatype["status"] and result_alphabets["status"] and result_mobilenumber["status"] and result_email["status"] and result_password["status"] and i["status"] == True:
+    if result_datatype["status"] and result_alphabets["status"] and result_mobilenumber["status"] and result_email["status"] and result_password["status"] and result_checkfields["status"] == True:
         try:
             signuptime = datetime.datetime.now()
             getData["signuptime"] = signuptime
@@ -117,8 +117,8 @@ def get_post_Request1():
         return result_email, 422
     elif result_password["status"] == False:
         return result_password, 422
-    elif i["status"] == False:
-        return i, 422
+    elif result_checkfields["status"] == False:
+        return result_checkfields, 422
 
 
 def check_data_type(getData: dict):
@@ -276,19 +276,26 @@ def check_password(getData):
 
 
 def check_fields(fields, getData):
-    for i in fields:
-        for j in getData.keys():
-            if i == j:
-                a = True
-            else:
-                a = False
+    """
+    This method will check the keys of the payload dict with list of fields.
 
-    if a == True:
-        response = {"status": True, "message": "success"}
+    parameter: payload::<dict>
+    return: response:: <dict>
+    """
+    for elements in fields:
+        for keys in getData.keys():
+            if elements == keys:
+                result_compare = True
+            else:
+                result_compare = False
+
+    if result_compare == True:
+        message = "success"
+        response = {"status": True, "message": message}
         return response
     else:
-        response = {"status": False,
-                    "message": "Please enter all required fields"}
+        message = "Please enter all required fields"
+        response = {"status": False, "message": message}
         return response
 
 
