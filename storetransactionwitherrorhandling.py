@@ -70,13 +70,14 @@ def get_post_Request1():
     result_alphabets = check_alphabets(getData)
     result_mobilenumber = check_mob_num(getData)
     result_email = check_email(getData)
-    h = password_check(getData)
+    result_password = check_password(getData)
     fields = ["firstname", "lastname", "emailid",
               "mobilenumber", "password", "dob"]
     i = check_fields(fields, getData)
     id = generate_id(getData)
     getData["id"] = id
-    if result_datatype["status"] and result_alphabets["status"] and result_mobilenumber["status"] and result_email["status"] and h["status"] and i["status"] == True:
+    result_password = check_password(getData)
+    if result_datatype["status"] and result_alphabets["status"] and result_mobilenumber["status"] and result_email["status"] and result_password["status"] and i["status"] == True:
         try:
             signuptime = datetime.datetime.now()
             getData["signuptime"] = signuptime
@@ -114,8 +115,8 @@ def get_post_Request1():
         return result_mobilenumber, 422
     elif result_email["status"] == False:
         return result_email, 422
-    elif h["status"] == False:
-        return h, 422
+    elif result_password["status"] == False:
+        return result_password, 422
     elif i["status"] == False:
         return i, 422
 
@@ -244,25 +245,33 @@ def check_email(getData):
 # - For each foramtted and documented function, a commit should be done
 
 
-def password_check(getData):
-    x = getData["password"]
+def check_password(getData):
+    """
+    This method will check if the entered password 
+    is in correct format
+
+    parameter: payload::<dict>
+    return: response:: <dict>
+    """
+    password = getData["password"]
     # number check
-    y = bool(re.match('^(?=.*[0-9]$)(?=.*[a-zA-Z])', x))
+    password_alphanumeric = bool(
+        re.match('^(?=.*[0-9]$)(?=.*[a-zA-Z])', password))
     # uppercase check
-    z = bool(re.match(r'\w*[A-Z]\w*', x))
+    password_uppercase = bool(re.match(r'\w*[A-Z]\w*', password))
     # lowercase check
-    z1 = bool(re.match(r'\w*[a-z]\w*', x))
+    password_lowercase = bool(re.match(r'\w*[a-z]\w*', password))
     # special character check
     regex = re.compile('[/?*&!@]')
-    z2 = getData["password"]
 
-    if len(x) >= 8 and len(x) <= 15 and y == True and z == True and z1 == True and regex.search(z2) != None:
-        response = {"status": True}
+    if len(password) >= 8 and len(password) <= 15 and password_alphanumeric == True and password_uppercase == True and password_lowercase == True and regex.search(password) != None:
+        message = "Strong Password"
+        response = {"status": True, "message": message}
         return response
 
     else:
-        response = {"status": False,
-                    "message": "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"}
+        message = "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"
+        response = {"status": False, "message": message}
         return response
 
 
