@@ -65,6 +65,12 @@ def check(a):
 
 @app.route("/postUsers2", methods=["POST"])
 def get_post_Request1():
+    """
+    This method will check for the certain conditions and will insert the data into sql database
+
+    parameter: payload::<dict>
+    return: response:: <dict>
+    """
     getData = request.json
     result_datatype = check_data_type(getData)
     result_alphabets = check_alphabets(getData)
@@ -81,32 +87,33 @@ def get_post_Request1():
         try:
             signuptime = datetime.datetime.now()
             getData["signuptime"] = signuptime
-            sql = "INSERT INTO signup (fname,lname,email,mobilenumber,password,dob,signuptime,id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-            val = (getData["firstname"], getData["lastname"], getData["emailid"], getData["mobilenumber"],
-                   getData["password"], getData["dob"], getData["signuptime"], getData["id"])
-            mycursor.execute(sql, val)
+            insert_query = "INSERT INTO signup (fname,lname,email,mobilenumber,password,dob,signuptime,id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+            values = (getData["firstname"], getData["lastname"], getData["emailid"], getData["mobilenumber"],
+                      getData["password"], getData["dob"], getData["signuptime"], getData["id"])
+            mycursor.execute(insert_query, values)
             mydb.commit()
-            print("hai")
-            filter = getData["id"]
-            print("hello")
-            sql1 = "SELECT * FROM signup WHERE id='"+filter+"'"
-            print(sql1)
-            mycursor.execute(sql1)
-            myresult = mycursor.fetchall()
-            print(myresult)
-            if (len(myresult)) != 0:
+            search_filter = getData["id"]
+            filter_query = "SELECT * FROM signup WHERE id='"+search_filter+"'"
+            print(filter_query)
+            mycursor.execute(filter_query)
+            result = mycursor.fetchall()
+            print(result)
+            if (len(result)) != 0:
                 message = "Successfully stored and status code: 200 "
-                return message
+                response = {"status": True, "message": message}
+                return response
             else:
                 message = "Not Stored"
-                return message
+                response = {"status": False, "message": message}
+                return response
         except TypeError as error:
-            msg = "Sorry, invalid datatype" + str(error)
-            return msg
+            message = f"Sorry, invalid datatype because {error}"
+            response = {"status": False, "message": message}
+            return response
         except Exception as error:
-            message1 = "Sorry, your data cannot be stored in database" + \
-                str(error)
-            return message1
+            message = f"Sorry, your data cannot be stored in database because {error}"
+            response = {"status": False, "message": message}
+            return response
     elif result_datatype["status"] == False:
         return result_datatype, 422
     elif result_alphabets["status"] == False:
