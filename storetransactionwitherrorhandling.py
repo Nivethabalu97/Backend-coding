@@ -128,7 +128,7 @@ def get_post_Request1():
         return result_checkfields, 422
 
 
-def check_data_type(getData: dict):
+def check_data_type(getData: dict) -> dict:
     """
     This method will check if the given values
     in the dictionary is string or not
