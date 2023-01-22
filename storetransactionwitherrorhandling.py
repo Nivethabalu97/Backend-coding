@@ -87,7 +87,7 @@ def get_post_Request1():
         try:
             signuptime = datetime.datetime.now()
             getData["signuptime"] = signuptime
-            insert_query = "INSERT INTO signup (fname,lname,email,mobilenumber,password,dob,signuptime,id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+            insert_query = f"INSERT INTO signup (fname,lname,email,mobilenumber,password,dob,signuptime,id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
             values = (getData["firstname"], getData["lastname"], getData["emailid"], getData["mobilenumber"],
                       getData["password"], getData["dob"], getData["signuptime"], getData["id"])
             mycursor.execute(insert_query, values)
