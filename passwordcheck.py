@@ -90,10 +90,30 @@ def check_password(getData: dict) -> dict:
         message = "Strong Password"
         response = {"status": True, "message": message}
         return response
-
-    else:
-        message = "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"
-        response = {"status": False, "message": message}
+    elif len(password) < 8 and len(password) > 15:
+        tip = "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"
+        message = "Password length should be of minimum 8 and maximum of 15"
+        response = {"status": False, "message": message, "tip": tip}
+        return response
+    elif password_alphanumeric == False:
+        tip = "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"
+        message = "Password should contain atleast one number"
+        response = {"status": False, "message": message, "tip": tip}
+        return response
+    elif password_uppercase == False:
+        tip = "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"
+        message = "Password should contain atleast one uppercase letter"
+        response = {"status": False, "message": message, "tip": tip}
+        return response
+    elif password_lowercase == False:
+        tip = "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"
+        message = "Password should contain atleast one lowercase letter"
+        response = {"status": False, "message": message, "tip": tip}
+        return response
+    elif regex.search(password) == None:
+        tip = "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"
+        message = "Password should contain atleast one special character from (/?*&!@)"
+        response = {"status": False, "message": message, "tip": tip}
         return response
 
 
