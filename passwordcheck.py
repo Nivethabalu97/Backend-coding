@@ -2,6 +2,8 @@ import mysql.connector
 from flask import Flask
 from flask import request
 import re
+import logging
+from datetime import date
 
 
 app = Flask(__name__)
@@ -13,12 +15,17 @@ mydb = mysql.connector.connect(
 )
 
 mycursor = mydb.cursor()
+currentdate = date.today()
+logging.basicConfig(
+    filename=f"api_debug_{currentdate}.log", format='%(asctime)s %(message)s', filemode='w')
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
 
-@app.route("/postUsers3", methods=["POST"])
+@app.route("/postLogin", methods=["POST"])
 def get_post_Request():
     """
-    This method will check if the entered password 
+    This method will check if the entered password
     matches with the any of the stored passwords in database 
     parameter: payload::<dict>
     return: response:: <dict>
@@ -29,7 +36,7 @@ def get_post_Request():
         try:
             password = getData["password"]
             print(password)
-            # to match the result format from sql query
+            # convert string datatype to tuple because sql query will return values in tuple datatype
             new_password = password,
             print(new_password)
             filter_query = "SELECT password FROM signup WHERE password='"+password+"'"
@@ -40,6 +47,12 @@ def get_post_Request():
             if result == new_password:
                 message = "Login successfull "
                 response = {"status": True, "message": message}
+                user_query = "SELECT id FROM signup WHERE password='"+password+"'"
+                print(user_query)
+                mycursor.execute(user_query)
+                user_id = mycursor.fetchone()
+                print(user_id)
+                logger.info(user_id)
                 return response
             else:
                 message = "Login failed! Please enter correct password"
@@ -50,6 +63,7 @@ def get_post_Request():
             response = {"status": False, "message": message}
             return response
     else:
+        logger.error(result_checkpassword)
         return result_checkpassword, "422"
 
 
