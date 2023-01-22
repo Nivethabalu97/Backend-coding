@@ -252,7 +252,7 @@ def check_email(getData: dict) -> dict:
 # - For each foramtted and documented function, a commit should be done
 
 
-def check_password(getData):
+def check_password(getData: dict) -> dict:
     """
     This method will check if the entered password 
     is in correct format
