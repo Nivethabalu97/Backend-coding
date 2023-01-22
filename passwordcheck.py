@@ -67,7 +67,7 @@ def get_post_Request():
         return result_checkpassword, "422"
 
 
-def check_password(getData):
+def check_password(getData: dict) -> dict:
     """
     This method will check if the entered password 
     is in correct format
