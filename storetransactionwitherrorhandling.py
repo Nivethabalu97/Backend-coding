@@ -207,7 +207,7 @@ def check_mob_num(getData: dict) -> dict:
         return response
 
 
-def check_email(getData):
+def check_email(getData: dict) -> dict:
     """
     This method will check if the given emailid
     is in correct format
