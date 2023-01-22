@@ -186,7 +186,7 @@ def check_alphabets(getData):
         return response
 
 
-def check_mob_num(getData):
+def check_mob_num(getData: dict) -> dict:
     """
     This method will check if the given mobilenumber
     of the user contains only digits
