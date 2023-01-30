@@ -3,6 +3,7 @@ from flask import Flask
 from flask import request
 import re
 import logging
+from log import *
 from datetime import date
 
 
@@ -15,11 +16,16 @@ mydb = mysql.connector.connect(
 )
 
 mycursor = mydb.cursor()
-currentdate = date.today()
-logging.basicConfig(
-    filename=f"api_debug_{currentdate}.log", format='%(asctime)s %(message)s', filemode='w')
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+currentdate = str(date.today())
+
+# logging.basicConfig(filename="login_details.log", level=logging.INFO,
+#                    format='%(asctime)s:%(name)s:%(levelname)s:%(message)s')
+logger_log = logging.getLogger("Nivi")
+logger_log.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s')
+file_handler = logging.FileHandler("login_details_"+currentdate+".log")
+file_handler.setFormatter(formatter)
+logger_log.addHandler(file_handler)
 
 
 @app.route("/postLogin", methods=["POST"])
@@ -45,6 +51,7 @@ def get_post_Request():
             result = mycursor.fetchone()
             print(result)
             if result == new_password:
+                print("hello")
                 message = "Login successfull "
                 response = {"status": True, "message": message}
                 user_query = "SELECT id FROM signup WHERE password='"+password+"'"
@@ -52,18 +59,23 @@ def get_post_Request():
                 mycursor.execute(user_query)
                 user_id = mycursor.fetchone()
                 print(user_id)
-                logger.info(user_id)
+                logger_log.info(user_id)
                 return response
+
             else:
+
                 message = "Login failed! Please enter correct password"
                 response = {"status": False, "message": message}
+                logger.error(message)
                 return response
         except Exception as error:
             message = f"Sorry, Login failed due to {error}"
             response = {"status": False, "message": message}
+            logger.error(message)
             return response
     else:
-        logger.error(result_checkpassword)
+        message = result_checkpassword["message"]
+        logger.error(message)
         return result_checkpassword, "422"
 
 
