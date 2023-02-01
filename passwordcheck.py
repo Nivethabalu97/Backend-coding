@@ -1,34 +1,29 @@
 import mysql.connector
 from flask import Flask
 from flask import request
-import re
 import logging
 from log import *
 from datetime import date
+from flask import Blueprint
+from genericfunctions import check_password, currentdate
 
 
-app = Flask(__name__)
+# app = Flask(__name__)
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     password="Nivetha@123",
     database="sampledatabase"
 )
-
+login_blueprint = Blueprint('login_blueprint', __name__)
 mycursor = mydb.cursor()
-currentdate = str(date.today())
+
 
 # logging.basicConfig(filename="login_details.log", level=logging.INFO,
 #                    format='%(asctime)s:%(name)s:%(levelname)s:%(message)s')
-logger_log = logging.getLogger("Nivi")
-logger_log.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s')
-file_handler = logging.FileHandler("login_details_"+currentdate+".log")
-file_handler.setFormatter(formatter)
-logger_log.addHandler(file_handler)
 
 
-@app.route("/postLogin", methods=["POST"])
+@login_blueprint.route("/postLogin", methods=["POST"])
 def get_post_Request():
     """
     This method will check if the entered password
@@ -77,57 +72,3 @@ def get_post_Request():
         message = result_checkpassword["message"]
         logger.error(message)
         return result_checkpassword, "422"
-
-
-def check_password(getData: dict) -> dict:
-    """
-    This method will check if the entered password 
-    is in correct format
-
-    parameter: payload::<dict>
-    return: response:: <dict>
-    """
-    password = getData["password"]
-    # number check
-    password_alphanumeric = bool(
-        re.match('^(?=.*[0-9]$)(?=.*[a-zA-Z])', password))
-    # uppercase check
-    password_uppercase = bool(re.match(r'\w*[A-Z]\w*', password))
-    # lowercase check
-    password_lowercase = bool(re.match(r'\w*[a-z]\w*', password))
-    # special character check
-    regex = re.compile('[/?*&!@]')
-
-    if len(password) >= 8 and len(password) <= 15 and password_alphanumeric == True and password_uppercase == True and password_lowercase == True and regex.search(password) != None:
-        message = "Strong Password"
-        response = {"status": True, "message": message}
-        return response
-    elif len(password) < 8 and len(password) > 15:
-        tip = "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"
-        message = "Password length should be of minimum 8 and maximum of 15"
-        response = {"status": False, "message": message, "tip": tip}
-        return response
-    elif password_alphanumeric == False:
-        tip = "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"
-        message = "Password should contain atleast one number"
-        response = {"status": False, "message": message, "tip": tip}
-        return response
-    elif password_uppercase == False:
-        tip = "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"
-        message = "Password should contain atleast one uppercase letter"
-        response = {"status": False, "message": message, "tip": tip}
-        return response
-    elif password_lowercase == False:
-        tip = "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"
-        message = "Password should contain atleast one lowercase letter"
-        response = {"status": False, "message": message, "tip": tip}
-        return response
-    elif regex.search(password) == None:
-        tip = "Password must be in length varies from 8 to 15 and must contain atleast one number,one uppercase and one lowercase letter and any one special character from (/?*&!@)"
-        message = "Password should contain atleast one special character from (/?*&!@)"
-        response = {"status": False, "message": message, "tip": tip}
-        return response
-
-
-if __name__ == '__main__':
-    app.run()
