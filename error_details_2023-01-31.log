@@ -5,4 +5,7 @@
 2023-01-31 01:03:45,432:ERROR:Password should contain atleast one uppercase letter
 2023-01-31 12:47:26,288:ERROR:Password should contain atleast one number
 2023-01-31 14:34:39,572:ERROR:Password should contain atleast one number
-hai
+2023-01-31 20:21:17,821:ERROR:email id should be of correct format
+2023-01-31 20:25:05,078:ERROR:firstname and lastname should not contain any numbers
+2023-01-31 20:25:23,741:ERROR:email id should be of correct format
+2023-01-31 20:28:17,318:ERROR:Password should contain atleast one number
