@@ -1,7 +1,6 @@
 import mysql.connector
 from flask import Flask, Blueprint
 from flask import request
-
 from genericfunctions import check_fields
 from log import *
 
@@ -17,7 +16,7 @@ store_blueprint = Blueprint('store_blueprint', __name__)
 mycursor = mydb.cursor()
 
 
-@store_blueprint.route("/posttransaction", methods=["POST"])
+@store_blueprint.route("/store", methods=["POST"])
 def get_post_Request():
     getData = request.json
     d = check_fields(getData)
@@ -54,4 +53,4 @@ def get_post_Request():
     else:
         message = d["message"]
         logger.error(message)
-        return d, "422"
+        return message
