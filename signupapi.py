@@ -22,7 +22,7 @@ mycursor = mydb.cursor()
 
 
 @signup_blueprint.route("/signup", methods=["POST"])
-def get_post_Request():
+def get_post_Request3():
     getData = request.json
     result_datatype = check_data_type(getData)
     result_alphabets = check_alphabets(getData)
