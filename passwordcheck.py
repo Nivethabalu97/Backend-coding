@@ -1,9 +1,7 @@
 import mysql.connector
 from flask import Flask
 from flask import request
-import logging
 from log import *
-from datetime import date
 from flask import Blueprint
 from genericfunctions import check_password, currentdate
 
@@ -24,7 +22,7 @@ mycursor = mydb.cursor()
 
 
 @login_blueprint.route("/postLogin", methods=["POST"])
-def get_post_Request():
+def get_post_Request4():
     """
     This method will check if the entered password
     matches with the any of the stored passwords in database 
