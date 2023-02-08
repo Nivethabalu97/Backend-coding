@@ -22,8 +22,7 @@ file_handler = logging.FileHandler("login_details_"+currentdate+".log")
 file_handler.setFormatter(formatter)
 logger_log.addHandler(file_handler)
 
-transaction_blueprint = Blueprint('transaction_blueprint', __name__)
-mycursor = mydb.cursor()
+
 
 
 store_blueprint = Blueprint('store_blueprint', __name__)
