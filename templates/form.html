@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<h2>
+    <center>Transaction details</center>
+</h2>
+<div class="container" style="width:50%">
+
+    <form action="#">
+        <div class="form-group">
+            {% for item,value in zip(labels_list,output) %}
+            <div class="row">
+                <div class="col-md-12">
+                    <label for={{ item }}>{{ item }}:</label>
+                    <input type="text" class="form-control" id={{ item }} value={{ value }} name={{ item }}>
+                </div>
+            </div>
+            {% endfor %}
+            <br>
+            <center><button type="submit" class="btn btn-success">Submit</button></center>
+    </form>
+
+</div>
+
+
+
+
+{% endblock %}

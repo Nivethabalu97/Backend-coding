@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="t1.css">
+  <title>transaction page</title>
+  <style>
+    table,
+    th,
+    td {
+      border: 1px solid white;
+      border-collapse: collapse;
+    }
+
+    table.center {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    body {
+      background-color: #faedcd;
+    }
+
+    h1,
+    h3 {
+      color: #e76f51;
+      text-align: center;
+    }
+
+    tr {
+      background-color: lightsalmon;
+    }
+  </style>
+</head>
+
+<body>
+  <h1><b>
+      <center>ABC Bank</center>
+    </b></h1>
+  <br>
+  <div class="container">
+    <h3><b>
+        <center>Transaction History</center>
+      </b></h3>
+  </div>
+  <br>
+  <br>
+  <center>
+    <table class="table table-hover" style="width:50%" id="mytable">
+      <thead>
+        <tr>
+          {% for name in heading %}
+          <th scope="col">{{ name }}</th>
+          {% endfor %}
+          <th scope="col">Operation</th>
+        </tr>
+
+      </thead>
+      <tbody>
+        {% for id,item,count in zip(row_id,records,button_id) %}
+        <tr id={{ id }}>
+          {% for val in item %}
+          <td>{{ val }}</td>
+          {% endfor %}
+          <td id={{ count }}><button type="button" class="btn btn-warning"
+              onclick="create(this.parentNode.id)">Edit</button></td>
+
+
+        </tr>
+        {% endfor %}
+
+
+
+
+
+
+      </tbody>
+    </table>
+  </center>
+
+</body>
+<script>
+
+
+  function create(id) {
+    var bid = document.getElementById(id);
+    console.log(bid);
+    console.log(bid.id);
+
+    //element = (document.getElementById(bid.id));
+    //console.log(element);
+    //element.innerHTML = "New Heading";
+    var row_id = (document.getElementById(bid.id).parentElement.id);
+    console.log(row_id);
+
+    var values = "";
+    list_values = [];
+    var len = document.getElementById(row_id).cells.length;
+    console.log(len)
+    for (i = 0; i < len; i++) {
+      values = document.getElementById(row_id).cells[i].innerHTML;
+      list_values.push(values);
+    }
+
+    console.log(list_values);
+    var host_name = "/edit?";
+    var query_selector = "tid=" + list_values[0] + "&sno=" + list_values[1] + "&entrydate=" + list_values[2] + "&state=" + list_values[3] + "&amount=" + list_values[4] + "&transactiontype=" + list_values[5] + "&balance=" + list_values[6] + "&loginid=" + list_values[7] + "&lastupdatedtime=" + list_values[8];
+    var url = host_name + query_selector;
+    console.log(url);
+    var list = document.getElementsByTagName("TD")[0];
+    //list.getElementsByTagName("a")[0].innerHTML = url;
+    window.location.href = url;
+
+  }
+</script>
+
+</html>
