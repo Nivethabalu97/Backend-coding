@@ -45,7 +45,7 @@ def get_post_Request4():
             print(result)
             if result == new_password:
                 print("hello")
-                message = "Login successfull "
+                message = "Login successfull"
                 response = {"status": True, "message": message}
                 user_query = "SELECT id FROM signup WHERE password='"+password+"'"
                 print(user_query)
