@@ -4,6 +4,8 @@ from flask import request
 from log import *
 from flask import Blueprint
 from genericfunctions import check_password, currentdate
+from pydantic import BaseModel
+from flask_pydantic import validate
 
 
 # app = Flask(__name__)
@@ -17,12 +19,18 @@ login_blueprint = Blueprint('login_blueprint', __name__)
 mycursor = mydb.cursor()
 
 
+class QueryParams1(BaseModel):
+    username: str
+    password: str
+
+
 # logging.basicConfig(filename="login_details.log", level=logging.INFO,
 #                    format='%(asctime)s:%(name)s:%(levelname)s:%(message)s')
 
 
 @login_blueprint.route("/postLogin", methods=["POST"])
-def get_post_Request4():
+@validate()
+def get_post_Request4(query: QueryParams1):
     """
     This method will check if the entered password
     matches with the any of the stored passwords in database 
