@@ -59,6 +59,7 @@ def get_post_Request3():
             mycursor.execute(sql1)
             myresult = mycursor.fetchall()
             print(myresult)
+            print("hello")
             if (len(myresult)) != 0:
                 message = "Successfully stored and status code: 200 "
                 return message
