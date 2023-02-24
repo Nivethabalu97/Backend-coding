@@ -1,7 +1,7 @@
 import mysql.connector
 from flask import Flask
 from flask import request
-import datetime
+from datetime import datetime
 import logging
 from log import *
 from flask import Blueprint
@@ -23,8 +23,6 @@ file_handler.setFormatter(formatter)
 logger_log.addHandler(file_handler)
 
 
-
-
 store_blueprint = Blueprint('store_blueprint', __name__)
 mycursor = mydb.cursor()
 
@@ -32,22 +30,47 @@ mycursor = mydb.cursor()
 @store_blueprint.route("/store", methods=["POST"])
 def get_post_Request():
     getData = request.json
-    d = check_fields(getData)
+    # tid = int(request.form.get("Transactionid"))
+    status = True
+
+    # amount = float(request.form.get("Amount"))
+    # transactiontype = request.form.get("Transactiontype")
+    # balance = float(request.form.get("Balance"))
+
+    # loginid = request.form.get("Loginid")
+    amount = getData["amount"]
+    transactiontype = getData["transactiontype"]
+    balance = getData["balance"]
+    tid = getData["tid"]
+    loginid = getData["loginid"]
+    lastupdatedtime = datetime.now()
+    if transactiontype == "credit":
+        new_balance = balance+amount
+    elif transactiontype == "debit":
+        new_balance = balance-amount
+
+    getData = {"tid": tid, "loginid": loginid, "amount": amount,
+               "transactiontype": transactiontype, "balance": new_balance, "status": status, "lastupdatedtime": lastupdatedtime}
+    print(getData)
+    fields = ["tid", "loginid", "amount", "transactiontype",
+              "balance", "status", "lastupdatedtime"]
+    d = check_fields(fields, getData)
     if d["status"] == True:
         try:
-            sql = "INSERT INTO transactions (sno,entrydate,state,amount,transcationtype,balance,loginid,lastupdatedtime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
-            val = (getData["sno"], getData["date"], getData["state"], getData["amount"],
-                   getData["transcationtype"], getData["balance"], getData["loginid"], getData["lastupdatedtime"])
-            mycursor.execute(sql, val)
+
+            new_tid = str(tid)
+            sql = f"UPDATE transactions SET tid = {tid}, loginid = {loginid},amount={amount},transactiontype= {transactiontype},balance={new_balance},status={status},lastupdatedtime WHERE tid={new_tid}"
+
+            mycursor.execute(sql)
             mydb.commit()
-            filter = getData["sno"]
-            sql1 = "SELECT * FROM transactions WHERE sno="+filter
+            sql1 = "SELECT * FROM transactions WHERE tid='"+new_tid+"'"
+            print("helloworld")
             print(sql1)
             mycursor.execute(sql1)
             myresult = mycursor.fetchall()
             print(myresult)
             if (len(myresult)) != 0:
-                message = "Successfully stored and status code 200 "
+                message = "Successfully stored and status code 200"
                 logger_log.info(getData["loginid"])
                 return message
             else:
