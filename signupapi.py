@@ -23,14 +23,22 @@ mycursor = mydb.cursor()
 
 @signup_blueprint.route("/signup", methods=["POST"])
 def get_post_Request3():
-    getData = request.json
+    firstname = request.form.get("firstname")
+    lastname = request.form.get("lastname")
+    emailid = request.form.get("email")
+    mobilenumber = request.form.get("phonenumber")
+    password = request.form.get("password")
+    dob = request.form.get("dob")
+    getData = {"firstname": firstname, "lastname": lastname, "emailid": emailid,
+               "mobilenumber": mobilenumber, "password": password, "dob": dob}
+    fields = ["firstname", "lastname", "emailid",
+              "mobilenumber", "password", "dob"]
     result_datatype = check_data_type(getData)
     result_alphabets = check_alphabets(getData)
     result_mobnumber = check_mob_num(getData)
     result_email = check_email(getData)
     result_password = check_password(getData)
-    fields = ["firstname", "lastname", "emailid",
-              "mobilenumber", "password", "dob"]
+
     result_fields = check_fields(fields, getData)
     id = generateid(getData)
     getData["id"] = id
