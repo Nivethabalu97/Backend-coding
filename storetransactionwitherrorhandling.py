@@ -29,29 +29,29 @@ mycursor = mydb.cursor()
 
 @store_blueprint.route("/store", methods=["POST"])
 def get_post_Request():
-    getData = request.json
-    # tid = int(request.form.get("Transactionid"))
-    status = True
+    # getData = request.json
+    tid = int(request.form.get("Transactionid"))
+    status = "True"
 
-    # amount = float(request.form.get("Amount"))
-    # transactiontype = request.form.get("Transactiontype")
-    # balance = float(request.form.get("Balance"))
+    amount = str(request.form.get("Amount"))
+    transactiontype = str(request.form.get("Transactiontype"))
+    balance = str(request.form.get("Balance"))
 
-    # loginid = request.form.get("Loginid")
-    amount = getData["amount"]
-    transactiontype = getData["transactiontype"]
-    balance = getData["balance"]
-    tid = getData["tid"]
-    loginid = getData["loginid"]
-    lastupdatedtime = datetime.now()
+    loginid = str(request.form.get("Loginid"))
+    # amount = getData["amount"]
+    # transactiontype = getData["transactiontype"]
+    # balance = getData["balance"]
+    # tid = getData["tid"]
+    # loginid = getData["loginid"]
+    lastupdatedtime = str(datetime.now())
     if transactiontype == "credit":
-        new_balance = balance+amount
+        new_balance = float(balance)+float(amount)
     elif transactiontype == "debit":
-        new_balance = balance-amount
+        new_balance = float(balance)-float(amount)
 
-    getData = {"tid": tid, "loginid": loginid, "amount": amount,
-               "transactiontype": transactiontype, "balance": new_balance, "status": status, "lastupdatedtime": lastupdatedtime}
-    print(getData)
+    getData = {"loginid": loginid, "amount": amount,
+               "transactiontype": transactiontype, "balance": str(new_balance), "status": status, "lastupdatedtime": lastupdatedtime}
+    print(type(getData))
     fields = ["tid", "loginid", "amount", "transactiontype",
               "balance", "status", "lastupdatedtime"]
     d = check_fields(fields, getData)
@@ -59,7 +59,12 @@ def get_post_Request():
         try:
 
             new_tid = str(tid)
-            sql = f"UPDATE transactions SET tid = {tid}, loginid = {loginid},amount={amount},transactiontype= {transactiontype},balance={new_balance},status={status},lastupdatedtime WHERE tid={new_tid}"
+            # sql = f"UPDATE transactions SET tid = {tid}, loginid = {loginid},amount={amount},transactiontype= {transactiontype},balance={new_balance},status={status},lastupdatedtime WHERE tid={new_tid}"
+            sql = "INSERT INTO transaction_test (tid,loginid,amount,transactiontype,balance,status,lastupdatedtime) VALUES (%d,%s,%s,%s,%s,%s,%s)"
+            val = (getData["sno"], getData["date"], getData["state"], getData["amount"],
+                   getData["transcationtype"], getData["balance"], getData["loginid"], getData["lastupdatedtime"])
+            mycursor.execute(sql, val)
+            mydb.commit()
 
             mycursor.execute(sql)
             mydb.commit()
